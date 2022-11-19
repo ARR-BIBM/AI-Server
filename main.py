@@ -1,20 +1,44 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify
 from flask_cors import CORS
+from flask_restx import Namespace, Resource, fields, Api
+from werkzeug.datastructures import FileStorage
 
 app = Flask(__name__)
 CORS(app)
+api = Api(app, version='1.0', title='API 문서', description='Swagger 문서', doc="/api-docs")
 
-@app.route('/ai', methods=['POST'])
-def submit():
-    files = request.files
-    images = []
-    for i in range(1, 5):
-        images.append(files['image'+str(i)])
+IMAGE_NUM_FOR_MODEL = 4
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
-    # model = learning(images)
-    # result = predict(model)
-    result = None
-    return jsonify({"result": result})
+make_model_api = Namespace('makemodel', description='광고 이미지로 모델 만들기')
+make_model_parser = make_model_api.parser()
+for i in range(1, IMAGE_NUM_FOR_MODEL + 1):
+    make_model_parser.add_argument('image'+str(i), location='files', type=FileStorage, required=True)
+
+upload_field = make_model_api.model('make_model', {
+    'SuccessFail': fields.String
+})
+
+@make_model_api.route('/')
+@make_model_api.expect(make_model_parser)
+class Make_Model(Resource):
+
+    def allowed_file(filename):
+        return '.' in filename and \
+               filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+    @make_model_api.response(201, 'Success', upload_field)
+    def post(self):
+        args = make_model_parser.parse_args()
+        images = []
+        for i in range(1, IMAGE_NUM_FOR_MODEL + 1):
+            file = args['image'+str(i)]
+            if file and self.allowed_file(file.filename):
+                images.append(file)
+
+        # upload_db(images)
+
+        return jsonify({"upload": "success"}), 201
 
 # if __name__ == '__main__':
 #     app.run(host='0.0.0.0', port='5000', threaded=True)
