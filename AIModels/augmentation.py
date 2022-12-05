@@ -2,9 +2,6 @@ import albumentations as A
 import cv2
 import numpy as np
 import os
-import torch
-
-IMAGE_NUM = 8
 
 train_transform = A.Compose(
     [
@@ -27,7 +24,7 @@ train_transform = A.Compose(
 ,)
 
 
-def startaug(image, bboxes, train_index, valid_index, num):
+def startaug(image, bboxes, train_index, valid_index, num, model_path):
     j = 0
     for j in range(num):
 
@@ -43,21 +40,21 @@ def startaug(image, bboxes, train_index, valid_index, num):
 
         if (j >= 0.8 * num):
             dataset_type = "val"
-            index = valid_index
+            index = valid_index + j - int(0.8*num)
         else:
             dataset_type = "train"
-            index = train_index
+            index = train_index + j
 
         # 이미지 저장
-        save_img_path = "yolov7/data/" + dataset_type + "/images/"
-        img_name = "augmented_img" + str(j + index) + ".PNG"
+        save_img_path = "AIModels/yolov7/data/" + model_path + dataset_type + "/images/"
+        img_name = "augmented_img" + str(int(index)) + ".PNG"
         save_img_path = save_img_path + img_name
         cv2.imwrite(save_img_path, transformed_image)
 
         # label 저장
-        text_name = "yolov7/data/"+dataset_type+"/labels" + \
-                    "augmented_img" + str(j + index) + ".txt"
-        with open(text_name, "w") as f:
+        text_name = "AIModels/yolov7/data/" + model_path + dataset_type + "/labels/" + \
+                    "augmented_img" + str(int(index)) + ".txt"
+        with open(text_name, mode="w") as f:
             flag = 0
             for item in transformed_bboxes[0]:
                 if flag != 0:
@@ -70,18 +67,19 @@ def startaug(image, bboxes, train_index, valid_index, num):
             f.close
 
 
-def augmentation():
-    img_path = "yolov7/data/test/images/"
-    label_path = "yolov7/data/test/labels/"
+def augmentation(model_name, IMAGE_NUM):
+    model_path = model_name + f"/"
+    img_path = "AIModels/yolov7/data/" + model_path + "test/images/"
+    label_path = "AIModels/yolov7/data/" + model_path + "test/labels/"
 
     images = []
     bboxes = []
 
     for i in range(IMAGE_NUM):
-        file_name = 'image'+str(i+1)+'.PNG'
-        image = cv2.imread(img_path + file_name)
+        file_name = 'image_re'+str(i+1)
+        image = cv2.imread(img_path + file_name + '.PNG')
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        bbox = np.loadtxt(fname=label_path + file_name, delimiter = " ", ndmin = 2)
+        bbox = np.loadtxt(fname=label_path + file_name + '.txt', delimiter=" ", ndmin=2)
         bbox = np.roll(bbox, 4, axis=1).tolist()
         images.append(image)
         bboxes.append(bbox)
@@ -89,15 +87,34 @@ def augmentation():
     train_idx = 0
     num = 200
     val_idx = 8 * int(num * 0.8)
-
-    for i in range(IMAGE_NUM - 1):
-        startaug(image[i], bboxes[i], train_idx, val_idx, num)
+    for i in range(IMAGE_NUM):
+        startaug(images[i], bboxes[i], train_idx, val_idx, num, model_path)
         train_idx = train_idx + int(num * 0.8)
         val_idx = val_idx + int(num * 0.2)
-    startaug(image[-1], bboxes[-1], train_idx, val_idx, num)
 
-    os.system('python yolov7/train.py --device 0 --batch 16 --epochs 25 --data data/custom.yaml --img 640 640 --cfg cfg/training/yolov7_custom.yaml --weights')
-    os.system('python yolov7/detect.py --weights runs/train/exp35/weights/best.pt --conf 0.6 --iou 0.6 --source test_new_cloth.mp4 --name new_cloth')
+    print("image augmentation done")
+
+
+def yolo_train(model_name):
+    # 결과 : best.pt // name 옵션으로 결과 폴더 이름 바꾸기
+    data_yaml_file_name = "data/"+model_name+".yaml"
+    with open("AIModels/yolov7/" + data_yaml_file_name, mode="w") as f:
+        f.write('train: ./data/' + model_name + '/train\n')
+        f.write('val: ./data/' + model_name + '/val\n')
+        f.write('nc: 1\n')
+        f.write('names: [ \'target\' ]\n')
+        f.close
+
+    os.system(
+        'python AIModels/yolov7/train.py --device 0 --batch 16 --epochs 25 --name ' + model_name + ' --data ' + data_yaml_file_name + ' --img 640 640 --cfg cfg/training/yolov7_custom.yaml --weights \'yolov7_training.pt\'')
+
+def yolo_detect(model_name):
+    # 결과 : .mp4
+    os.system(
+        'python AIModels/yolov7/detect.py --weights runs/train/' + model_name + '/weights/best.pt --conf 0.6 --iou 0.6 --source ' + model_name + '.mp4 -- name ' + model_name)
+
 
 if __name__ == '__main__':
-    augmentation()
+    augmentation("example_0", 8)
+    yolo_train('example_0')
+

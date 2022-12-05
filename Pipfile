@@ -26,10 +26,8 @@ seaborn = ">=0.11.0"
 ipython = "*"
 psutil = "*"
 thop = "*"
-utils = "*"
-models = "*"
 
 [dev-packages]
 
 [requires]
-python_version = "*"
+python_version = ">=3.8"
