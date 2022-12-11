@@ -32,12 +32,13 @@ class Upload_video(Resource):
         ad_idx = args['ad_idx']
 
         ad_name = uid + '_' + str(ad_idx)
+        model_name = uid + '_' + str(model_idx)
 
         filename = 'AIModels/yolov7/' + ad_name +'.mp4'
         video.save(filename)
 
-        yolo_detect(ad_name, model_idx)
-        cnt, fps = total_detect(ad_name, uid, model_idx)
+        yolo_detect(ad_name, model_name)
+        cnt, fps = total_detect(ad_name)
         os.remove(filename)
 
         return jsonify({'cnt':cnt})
