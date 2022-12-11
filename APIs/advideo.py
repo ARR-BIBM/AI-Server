@@ -31,7 +31,7 @@ class Upload_video(Resource):
         model_idx = args['model_idx']
         ad_idx = args['ad_idx']
 
-        ad_name = uid + '_' + ad_idx
+        ad_name = uid + '_' + str(ad_idx)
 
         filename = 'AIModels/yolov7/' + ad_name +'.mp4'
         video.save(filename)
