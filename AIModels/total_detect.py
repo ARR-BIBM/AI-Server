@@ -49,7 +49,7 @@ def letterbox(img, new_shape=(640, 640), color=(114, 114, 114), auto=True, scale
 def set_config(classes_to_filter):
     opt = {
 
-        "weights": "weights/yolov7.pt",  # Path to weights file default weights are for nano model
+        "weights": "AIModels/PretrainedModel/weights/yolov7.pt",  # Path to weights file default weights are for nano model
         "yaml": "data/coco.yaml",
         "img-size": 640,  # default image size
         "conf-thres": 0.25,  # confidence threshold for inference.
