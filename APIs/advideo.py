@@ -39,6 +39,6 @@ class Upload_video(Resource):
 
         yolo_detect(ad_name, model_name)
         cnt, fps = total_detect(ad_name)
-        os.remove(filename)
+        # os.remove(filename)
 
-        return jsonify({'cnt':cnt})
+        return jsonify({'cnt':int(cnt//fps)})

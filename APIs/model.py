@@ -45,7 +45,7 @@ class ModelAPI(Resource):
         bbox(model_name, IMAGE_NUM_FOR_MODEL)
         augmentation(model_name, IMAGE_NUM_FOR_MODEL)
         yolo_train(model_name)
-        self.remove_directory(model_name)
+        # self.remove_directory(model_name)
 
         return jsonify()
 
@@ -61,4 +61,5 @@ class ModelAPI(Resource):
     def remove_directory(self, model_name):
         filepath = "AIModels/yolov7/data/" + model_name
         shutil.rmtree(filepath)
+        os.remove(filepath+'.yaml')
 
