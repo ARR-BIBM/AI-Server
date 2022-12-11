@@ -169,11 +169,12 @@ def normalize(box_label):
 def write_into_txt(box_label, model_name):
     # writedata.py
     f = open('AIModels/yolov7/data/' + model_name + '/test/labels/image_re'+'.txt', 'w')
-    for label in box_label:
+    for i, label in enumerate(box_label):
+        f = open(f'AIModels/yolov7/data/' + model_name + '/test/labels/image_re'+str(i+1)+'.txt', 'w')
         x_mid, y_mid, width, height = label[0][0], label[0][1], label[0][2], label[0][3]
         data = f'0 {x_mid} {y_mid} {width} {height}\n'
         f.write(data)
-    f.close()
+        f.close()
 
 def bbox(model_name, IMAGE_NUM):
     bbox_label, img_arr = get_box_label(model_name, IMAGE_NUM)
