@@ -112,7 +112,7 @@ def yolo_train(model_name):
 def yolo_detect(model_name):
     # 결과 : .mp4
     os.system(
-        'python AIModels/yolov7/detect.py --weights AIModels/yolov7/runs/train/' + model_name + '/weights/best.pt --conf 0.6 --iou 0.6 --source ' + model_name + '.mp4 -- name ' + model_name)
+        'python AIModels/yolov7/detect.py --weights AIModels/runs/train/' + model_name + '/weights/best.pt --conf 0.6 --iou 0.6 --source ' + model_name + '.mp4 -- name ' + model_name)
 
 if __name__ == '__main__':
     augmentation("example_0", 8)
