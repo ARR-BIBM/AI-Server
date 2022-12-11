@@ -147,7 +147,7 @@ def detect(ad_name, video_path, opt):
 
 def total_detect(ad_name):
     opt = set_config(['person'])
-    video_path = 'AIModels/yolov7/'+ad_name+'.mp4'
+    video_path = 'runs/origin/'+ad_name+'.mp4'
     cnt, fps = detect(ad_name, video_path, opt)
 
     print(f'Total Count of Avatars {int(cnt // fps)}')
