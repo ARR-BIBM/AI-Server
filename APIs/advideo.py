@@ -34,7 +34,7 @@ class Upload_video(Resource):
         ad_name = uid + '_' + str(ad_idx)
         model_name = uid + '_' + str(model_idx)
 
-        filename = 'AIModels/yolov7/' + ad_name +'.mp4'
+        filename = 'runs/origin/' + ad_name +'.mp4'
         video.save(filename)
 
         yolo_detect(ad_name, model_name)

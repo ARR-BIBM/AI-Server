@@ -74,7 +74,7 @@ def detect(ad_name, video_path, opt):
     cnt = 0
 
     # Initialzing object for writing video output
-    output = cv2.VideoWriter(ad_name+'_re.mp4', cv2.VideoWriter_fourcc(*'DIVX'), fps, (w, h))
+    output = cv2.VideoWriter('runs/total/'+ad_name+'_re.mp4', cv2.VideoWriter_fourcc(*'DIVX'), fps, (w, h))
     torch.cuda.empty_cache()
     # Initializing model and setting it for inference
     with torch.no_grad():
