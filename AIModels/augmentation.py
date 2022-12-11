@@ -99,8 +99,8 @@ def yolo_train(model_name):
     # 결과 : best.pt // name 옵션으로 결과 폴더 이름 바꾸기
     data_yaml_file_name = "data/"+model_name+".yaml"
     with open("AIModels/yolov7/" + data_yaml_file_name, mode="w") as f:
-        f.write('train: ./data/' + model_name + '/train\n')
-        f.write('val: ./data/' + model_name + '/val\n')
+        f.write('train: AIModels/yolov7/data/' + model_name + '/train\n')
+        f.write('val: AIModels/yolov7/data/' + model_name + '/val\n')
         f.write('nc: 1\n')
         f.write('names: [ \'target\' ]\n')
         f.close
