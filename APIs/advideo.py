@@ -1,8 +1,7 @@
 from flask import jsonify, abort
 from werkzeug.datastructures import FileStorage
 from flask_restx import Namespace, Resource
-from AIModels.augmentation import yolo_detect
-from AIModels.total_detect import total_detect
+from AIModels.total_detect import total_detect, self_detect
 import os
 
 advideo_api = Namespace('upload_video', description='광고 동영상 받아서 detect')
@@ -37,8 +36,8 @@ class Upload_video(Resource):
         filename = 'runs/origin/' + ad_name +'.mp4'
         video.save(filename)
 
-        yolo_detect(ad_name, model_name)
-        cnt, fps = total_detect(ad_name)
+        self_cnt, self_fps = self_detect(ad_name)
+        totla_cnt, total_fps = total_detect(ad_name)
         # os.remove(filename)
 
-        return jsonify({'cnt':int(cnt//fps)})
+        return jsonify({'cnt':int(totla_cnt//total_fps)-int(self_cnt//self_fps)})

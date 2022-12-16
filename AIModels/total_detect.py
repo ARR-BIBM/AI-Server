@@ -46,10 +46,10 @@ def letterbox(img, new_shape=(640, 640), color=(114, 114, 114), auto=True, scale
 
 # Set Configuration
 
-def set_config(classes_to_filter):
+def set_config(weightpath, classes_to_filter):
     opt = {
 
-        "weights": "AIModels/PretrainedModel/weights/yolov7.pt",  # Path to weights file default weights are for nano model
+        "weights": weightpath,  # Path to weights file default weights are for nano model
         "yaml": "data/coco.yaml",
         "img-size": 640,  # default image size
         "conf-thres": 0.25,  # confidence threshold for inference.
@@ -60,7 +60,7 @@ def set_config(classes_to_filter):
     return opt
 
 
-def detect(ad_name, video_path, opt):
+def detect(ad_name, video_path, opt, mode):
     # Initializing video object
     video = cv2.VideoCapture(video_path)
 
@@ -74,7 +74,7 @@ def detect(ad_name, video_path, opt):
     cnt = 0
 
     # Initialzing object for writing video output
-    output = cv2.VideoWriter('runs/total/'+ad_name+'_re.mp4', cv2.VideoWriter_fourcc(*'DIVX'), fps, (w, h))
+    output = cv2.VideoWriter('runs/' + mode + '/' + ad_name + '_' + mode + '.mp4', cv2.VideoWriter_fourcc(*'DIVX'), fps, (w, h))
     torch.cuda.empty_cache()
     # Initializing model and setting it for inference
     with torch.no_grad():
@@ -146,11 +146,19 @@ def detect(ad_name, video_path, opt):
 
 
 def total_detect(ad_name):
-    opt = set_config(['person'])
+    weightpath = "AIModels/PretrainedModel/weights/yolov7.pt"
+    opt = set_config(weightpath, ['person'])
     video_path = 'runs/origin/'+ad_name+'.mp4'
-    cnt, fps = detect(ad_name, video_path, opt)
+    cnt, fps = detect(ad_name, video_path, opt, "total")
 
     print(f'Total Count of Avatars {int(cnt // fps)}')
     return cnt, fps
 
+def self_detect(ad_name):
+    weightpath = "runs/train/"+ad_name+"/weights/best.pt"
+    opt = set_config(weightpath, ['person'])
+    video_path = 'runs/origin/'+ad_name+'.mp4'
+    cnt, fps = detect(ad_name, video_path, opt, "detect")
 
+    print(f'Self Count of Avatars {int(cnt // fps)}')
+    return cnt, fps
