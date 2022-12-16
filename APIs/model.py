@@ -45,7 +45,7 @@ class ModelAPI(Resource):
         bbox(model_name, IMAGE_NUM_FOR_MODEL)
         augmentation(model_name, IMAGE_NUM_FOR_MODEL)
         yolo_train(model_name)
-        # self.remove_directory(model_name)
+        self.remove_directory(model_name)
 
         return jsonify()
 

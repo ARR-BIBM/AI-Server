@@ -106,13 +106,13 @@ def yolo_train(model_name):
         f.close
 
     os.system(
-        'python AIModels/yolov7/train.py --device 0 --batch 16 --epochs 25 --name ' + model_name + ' --data ' + data_yaml_file_name + ' --img 640 640 --cfg AIModels/yolov7/cfg/training/yolov7_custom.yaml --weights \'AIModels/yolov7_training.pt\'')
+        'python AIModels/yolov7/train.py --device 0 --batch 8 --epochs 25 --name ' + model_name + ' --data ' + data_yaml_file_name + ' --img 640 640 --cfg AIModels/yolov7/cfg/training/yolov7_custom.yaml --weights \'AIModels/yolov7_training.pt\'')
 
 
 def yolo_detect(ad_name, model_name):
     # 결과 : .mp4
     os.system(
-        'python AIModels/yolov7/detect.py --weights runs/train/' + model_name + '/weights/best.pt --conf 0.6 --iou 0.6 --source ' + 'runs/origin' + ad_name + '.mp4 -- name ' + ad_name)
+        'python AIModels/yolov7/detect.py --weights runs/train/' + model_name + '/weights/best.pt --conf 0.6 --iou 0.6 --source ' + 'runs/origin/' + ad_name + '.mp4 --name ' + ad_name)
 
 if __name__ == '__main__':
     augmentation("example_0", 8)
