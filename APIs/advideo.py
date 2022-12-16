@@ -36,7 +36,7 @@ class Upload_video(Resource):
         filename = 'runs/origin/' + ad_name +'.mp4'
         video.save(filename)
 
-        self_cnt, self_fps = self_detect(ad_name)
+        self_cnt, self_fps = self_detect(ad_name, model_name)
         totla_cnt, total_fps = total_detect(ad_name)
         # os.remove(filename)
 

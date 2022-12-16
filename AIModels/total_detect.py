@@ -154,9 +154,9 @@ def total_detect(ad_name):
     print(f'Total Count of Avatars {int(cnt // fps)}')
     return cnt, fps
 
-def self_detect(ad_name):
-    weightpath = "runs/train/"+ad_name+"/weights/best.pt"
-    opt = set_config(weightpath, ['person'])
+def self_detect(ad_name, model_name):
+    weightpath = "runs/train/"+model_name+"/weights/best.pt"
+    opt = set_config(weightpath, None)
     video_path = 'runs/origin/'+ad_name+'.mp4'
     cnt, fps = detect(ad_name, video_path, opt, "detect")
 
