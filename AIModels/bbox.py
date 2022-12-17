@@ -168,7 +168,6 @@ def normalize(box_label):
 
 def write_into_txt(box_label, model_name):
     # writedata.py
-    f = open('AIModels/yolov7/data/' + model_name + '/test/labels/image_re'+'.txt', 'w')
     for i, label in enumerate(box_label):
         f = open(f'AIModels/yolov7/data/' + model_name + '/test/labels/image_re'+str(i+1)+'.txt', 'w')
         x_mid, y_mid, width, height = label[0][0], label[0][1], label[0][2], label[0][3]
@@ -181,5 +180,5 @@ def bbox(model_name, IMAGE_NUM):
     bbox_label = normalize(bbox_label)
     write_into_txt(bbox_label, model_name)
 
-# for i in img_arr:
-#   cv2_imshow(i)
+    # for i, img in enumerate(img_arr):
+    #   cv2.imwrite(str(i)+'.png', img)

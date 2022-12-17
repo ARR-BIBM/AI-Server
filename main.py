@@ -3,6 +3,8 @@ from flask_cors import CORS
 from flask_restx import Api
 from APIs.model import model_api
 from APIs.advideo import advideo_api
+from APIs.result import result_api
+
 import sys
 
 app = Flask(__name__)
@@ -15,6 +17,7 @@ sys.path.append('AIModels/yolov7')
 
 api.add_namespace(model_api, '/model')
 api.add_namespace(advideo_api, '/advideo')
+api.add_namespace(result_api, '/result')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5002)
